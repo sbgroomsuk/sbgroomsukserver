@@ -22,15 +22,31 @@ router.get("/", async (req, res) => {
 
 // POST a new product
 router.post("/", async (req, res) => {
-  const { category, item, total, offer, name } = req.body;
+  const { category, items, total, offer, name } = req.body; // Use `items` instead of `item`
+  
   try {
-    const newProduct = new Package({ category, item, total, offer, name });
-    await newProduct.save();
-    res.status(201).json(newProduct);
+    // Validate required fields
+    if (!category || !name || !total || !offer || !items || !Array.isArray(items) || items.length === 0) {
+      return res.status(400).json({ error: "All fields are required, including items." });
+    }
+
+    // Validate that all items have `item` and `quantity`
+    for (const entry of items) {
+      if (!entry.item || !entry.quantity) {
+        return res.status(400).json({ error: "Each item must have a name and quantity." });
+      }
+    }
+
+    // Create new package
+    const newPackage = new Package({ category, items, total, offer, name });
+    await newPackage.save();
+    
+    res.status(201).json(newPackage);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
+
 
 router.delete("/:id", async (req, res) => {
   try {
