@@ -3,8 +3,7 @@ const mongoose = require("mongoose");
 const ProductSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
-    price: { type: Number, required: true },
-    image: { type: [String], required: true }, // Store as an array of image URLs
+    price: { type: Number, required: true },// Store as an array of image URLs
     category: { type: String, required: true },
     description: [
       {
@@ -16,8 +15,7 @@ const ProductSchema = new mongoose.Schema(
           }
         ]
       }
-    ],    
-    color: { type: [String], required: true }, // Store as an array of colors
+    ],    // Store as an array of colors
   },
   { timestamps: true } // Enable `createdAt` and `updatedAt`
 );
