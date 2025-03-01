@@ -33,6 +33,30 @@ router.post("/", async (req, res) => {
   }
 });
 
+// GET products by name or category (separate route)
+router.get("/filter", async (req, res) => {
+  try {
+    const { search } = req.query;
+
+    if (!search || search.trim() === "") {
+      return res.json([]); // Return empty array if search is empty
+    }
+
+    const query = {
+      $or: [
+        { name: { $regex: search, $options: "i" } }, // Search in name
+        { category: { $regex: search, $options: "i" } } // Search in category
+      ]
+    };
+
+    const filteredProducts = await Product.find(query).sort({ createdAt: -1 });
+
+    res.json(filteredProducts);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 router.delete("/:id", async (req, res) => {
   try {
     const { id } = req.params;
