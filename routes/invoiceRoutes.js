@@ -3,26 +3,20 @@ const router = express.Router();
 const Counter = require("../models/Counter");
 const mongoose = require("mongoose");
 
-// Function to get the next customer number
-const getNextCustomerNumber = async () => {
-  let counter = await Counter.findOne({ name: "customerNumber" });
-
-  if (!counter) {
-    counter = new Counter({ name: "customerNumber", value: 1 });
-  } else {
-    counter.value += 1;
-  }
-
-  await counter.save();
-  return counter.value.toString().padStart(3, "0"); // Format as "001"
-};
-
 // GET next customer number
 router.get("/next", async (req, res) => {
   try {
-    const nextCustomerNumber = await getNextCustomerNumber();
-    res.json({ customerNumber: nextCustomerNumber });
+    const counter = await Counter.findOneAndUpdate(
+      { name: "customerNumber" },
+      { $inc: { value: 1 } }, // Atomically increment
+      { new: true, upsert: true } // Return the updated document
+    );
+
+    console.log("Updated Customer Number:", counter.value); // Debug output
+
+    res.json({ customerNumber: counter.value.toString().padStart(3, "0") }); // Ensure 3-digit format
   } catch (error) {
+    console.error("Error generating customer number:", error);
     res.status(500).json({ error: "Error generating customer number" });
   }
 });
