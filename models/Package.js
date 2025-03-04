@@ -12,6 +12,7 @@ const PackageSchema = new mongoose.Schema(
     total: { type: Number, required: true },
     offer: { type: Number, required: true },
     name: { type: String, required: true },
+    image: { type: String, required: true },
   },
   { timestamps: true } // Enable `createdAt` and `updatedAt`
 );

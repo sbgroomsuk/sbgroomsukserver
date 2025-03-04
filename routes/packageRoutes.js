@@ -22,11 +22,11 @@ router.get("/", async (req, res) => {
 
 // POST a new product
 router.post("/", async (req, res) => {
-  const { category, items, total, offer, name } = req.body; // Use `items` instead of `item`
+  const { category, items, total, offer, name, image } = req.body; // Use `items` instead of `item`
   
   try {
     // Validate required fields
-    if (!category || !name || !total || !offer || !items || !Array.isArray(items) || items.length === 0) {
+    if (!image || !category || !name || !total || !offer || !items || !Array.isArray(items) || items.length === 0) {
       return res.status(400).json({ error: "All fields are required, including items." });
     }
 
@@ -38,7 +38,7 @@ router.post("/", async (req, res) => {
     }
 
     // Create new package
-    const newPackage = new Package({ category, items, total, offer, name });
+    const newPackage = new Package({ category, items, total, offer, name, image });
     await newPackage.save();
     
     res.status(201).json(newPackage);
